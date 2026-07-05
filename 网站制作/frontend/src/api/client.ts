@@ -2,7 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '@/utils/token';
 
 const apiClient = axios.create({
-  baseURL: '/api/v1',
+  baseURL: `${import.meta.env.VITE_API_BASE || ''}/api/v1`,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -67,7 +67,7 @@ apiClient.interceptors.response.use(
       }
 
       try {
-        const { data } = await axios.post('/api/v1/auth/refresh', {
+        const { data } = await axios.post(`${import.meta.env.VITE_API_BASE || ''}/api/v1/auth/refresh`, {
           refresh_token: refreshToken,
         });
         setTokens(data.access_token, data.refresh_token);

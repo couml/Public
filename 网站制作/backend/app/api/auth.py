@@ -1,5 +1,7 @@
 import uuid
 
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from redis import Redis
 from sqlalchemy import select
@@ -108,7 +110,7 @@ async def login(
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh(
     body: RefreshRequest,
-    redis: Redis = Depends(get_redis),
+    redis = Depends(get_redis),
     db: AsyncSession = Depends(get_db),
 ):
     """Refresh access and refresh tokens."""
@@ -127,13 +129,14 @@ async def refresh(
             detail="Invalid token",
         )
 
-    # Check if token is blacklisted
-    is_blacklisted = redis.get(f"blacklist:{body.refresh_token}")
-    if is_blacklisted:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token has been revoked",
-        )
+    # Check if token is blacklisted (skip if Redis unavailable)
+    if redis:
+        is_blacklisted = redis.get(f"blacklist:{body.refresh_token}")
+        if is_blacklisted:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has been revoked",
+            )
 
     # Verify user still exists and is active
     result = await db.execute(select(User).where(User.id == uuid.UUID(user_id)))
@@ -164,16 +167,15 @@ async def get_me(
 @router.post("/logout")
 async def logout(
     refresh_token: str,
-    redis: Redis = Depends(get_redis),
+    redis = Depends(get_redis),
     current_user: User = Depends(get_current_user),
 ):
     """Logout by blacklisting the refresh token in Redis."""
-    payload = decode_token(refresh_token)
-    exp = payload.get("exp", 0)
-
-    import time
-
-    ttl = max(int(exp - time.time()), 1)
-    redis.setex(f"blacklist:{refresh_token}", ttl, "1")
+    if redis:
+        payload = decode_token(refresh_token)
+        exp = payload.get("exp", 0)
+        import time
+        ttl = max(int(exp - time.time()), 1)
+        redis.setex(f"blacklist:{refresh_token}", ttl, "1")
 
     return {"success": True, "message": "Logged out successfully"}

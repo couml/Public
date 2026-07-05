@@ -1,69 +1,48 @@
-from datetime import datetime
-from typing import Generic, TypeVar
+from datetime import date, datetime
+from typing import Any, Generic, TypeVar
 from uuid import UUID
 
-from pydantic import BaseModel, Field, field_serializer
+from pydantic import BaseModel, Field, model_serializer
 
 
 T = TypeVar("T")
 
 
 class ORMModel(BaseModel):
-    """Base model that handles UUID and datetime serialization from ORM objects."""
+    """Base model that converts all UUID/datetime/date to JSON-safe types."""
 
     model_config = {"from_attributes": True}
 
-    @field_serializer("id", check_fields=False)
-    def serialize_id(self, value: UUID) -> str:
-        return str(value)
+    @model_serializer(mode="wrap")
+    def _serialize(self, handler, info):
+        """Walk the serialized result and convert UUID/datetime/date to strings."""
+        result = handler(self)
+        _convert_to_json_safe(result)
+        return result
 
-    @field_serializer("created_at", check_fields=False)
-    def serialize_created_at(self, value: datetime) -> str:
-        return value.isoformat()
 
-    @field_serializer("updated_at", check_fields=False)
-    def serialize_updated_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("recorded_at", check_fields=False)
-    def serialize_recorded_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("queued_at", check_fields=False)
-    def serialize_queued_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("started_at", check_fields=False)
-    def serialize_started_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("completed_at", check_fields=False)
-    def serialize_completed_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("last_seen_at", check_fields=False)
-    def serialize_last_seen_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("expires_at", check_fields=False)
-    def serialize_expires_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("share_expires_at", check_fields=False)
-    def serialize_share_expires_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("resolved_at", check_fields=False)
-    def serialize_resolved_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("downloaded_at", check_fields=False)
-    def serialize_downloaded_at(self, value: datetime) -> str:
-        return value.isoformat()
-
-    @field_serializer("release_date", check_fields=False)
-    def serialize_release_date(self, value: datetime) -> str:
-        return value.isoformat()
+def _convert_to_json_safe(obj: Any) -> Any:
+    """Recursively convert UUID/datetime/date objects to strings."""
+    if isinstance(obj, dict):
+        for key, val in obj.items():
+            if isinstance(val, UUID):
+                obj[key] = str(val)
+            elif isinstance(val, datetime):
+                obj[key] = val.isoformat()
+            elif isinstance(val, date):
+                obj[key] = val.isoformat()
+            elif isinstance(val, list):
+                for item in val:
+                    _convert_to_json_safe(item)
+            elif isinstance(val, dict):
+                _convert_to_json_safe(val)
+    elif isinstance(obj, list):
+        for item in obj:
+            if isinstance(item, (UUID, datetime, date)):
+                idx = obj.index(item)
+                obj[idx] = str(item) if isinstance(item, UUID) else item.isoformat()
+            elif isinstance(item, (dict, list)):
+                _convert_to_json_safe(item)
 
 
 class PaginationParams(BaseModel):

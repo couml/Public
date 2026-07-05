@@ -21,7 +21,7 @@ from app.utils.minio_client import minio_client
 router = APIRouter(prefix="/documents")
 
 
-@router.get("/", response_model=PaginatedResponse[DocumentOut])
+@router.get("", response_model=PaginatedResponse[DocumentOut])
 async def list_documents(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),

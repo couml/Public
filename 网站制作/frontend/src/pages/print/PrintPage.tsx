@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Form, Select, InputNumber, Radio, Switch, Input, Button, Table, Steps, Tag, Space, message, Popconfirm } from 'antd';
-import { DeleteOutlined, RedoOutlined, SendOutlined } from '@ant-design/icons';
+import { DeleteOutlined, RedoOutlined, SendOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import FileUploadZone from '@/components/FileUploadZone';
 import UploadProgressList from '@/components/UploadProgressList';
@@ -56,8 +56,8 @@ const PrintPage: React.FC = () => {
   const fetchStaging = useCallback(async () => {
     setStagingLoading(true);
     try {
-      const files = await filesApi.getStaging();
-      setStagingFiles(files);
+      const res = await filesApi.getStaging();
+      setStagingFiles(res.items || []);
     } catch {
       message.error('获取暂存文件失败');
     } finally {
@@ -205,13 +205,29 @@ const PrintPage: React.FC = () => {
           <Button type="primary" size="small" icon={<SendOutlined />} onClick={() => handlePrint(record)}>
             打印
           </Button>
+          <Button
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={async () => {
+              try {
+                const token = localStorage.getItem('access_token');
+                const resp = await fetch(`/api/v1/files/${record.id}/preview?token=${token}`);
+                if (!resp.ok) throw new Error('Preview failed');
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+              } catch {
+                message.error('预览失败');
+              }
+            }}
+          >
+            查看
+          </Button>
           <Popconfirm title="确定删除该文件？" onConfirm={() => handleDelete(record.id)}>
-            <Button size="small" danger icon={<DeleteOutlined />}>
-              删除
-            </Button>
+            <Button size="small" danger icon={<DeleteOutlined />}>删除</Button>
           </Popconfirm>
           <Button size="small" icon={<RedoOutlined />} onClick={() => handleReconvert(record.id)}>
-            重转
+            转换
           </Button>
         </Space>
       ),

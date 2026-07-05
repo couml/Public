@@ -8,7 +8,7 @@ interface DeviceState {
   deviceStatuses: Record<string, DeviceStatusUpdate>;
   totalDevices: number;
   isLoading: boolean;
-  fetchDevices: (params?: { brand?: string; status?: string; search?: string; page?: number }) => Promise<void>;
+  fetchDevices: (params?: { brand?: string; status?: string; search?: string; page?: number; page_size?: number }) => Promise<void>;
   fetchDevice: (id: string) => Promise<void>;
   updateStatus: (status: DeviceStatusUpdate) => void;
   setSelectedDevice: (device: Printer | null) => void;

@@ -1,14 +1,17 @@
 from datetime import datetime
 from uuid import UUID
+
+from pydantic import Field
+
 from app.schemas.common import ORMModel
-from pydantic import BaseModel, Field
 
 
 class DocumentOut(ORMModel):
     """扫描文档响应"""
 
-    id: str = Field(description="文档ID")
-    user_id: str = Field(description="上传用户ID")
+    id: UUID = Field(description="文档ID")
+    user_id: UUID | None = Field(default=None, description="上传用户ID")
+    printer_id: UUID | None = Field(default=None, description="关联打印机ID")
     filename: str = Field(description="文件名")
     file_size: int = Field(description="文件大小（字节）")
     mime_type: str | None = Field(default=None, description="MIME类型")
@@ -18,10 +21,8 @@ class DocumentOut(ORMModel):
     category: str | None = Field(default=None, description="分类")
     is_shared: bool = Field(default=False, description="是否已分享")
     share_token: str | None = Field(default=None, description="分享令牌")
-    share_expires_at: str | None = Field(default=None, description="分享过期时间（ISO格式）")
-    created_at: str = Field(description="创建时间（ISO格式）")
-
-    model_config = {"from_attributes": True}
+    share_expires_at: datetime | None = Field(default=None, description="分享过期时间")
+    created_at: datetime = Field(description="创建时间")
 
 
 class ShareRequest(ORMModel):

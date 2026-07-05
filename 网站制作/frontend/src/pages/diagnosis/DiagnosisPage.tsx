@@ -156,6 +156,48 @@ const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({ result }) => 
             ))}
           </div>
         )}
+
+        {/* Printer Status */}
+        {result.printer_context && (
+          <div>
+            <Text type="secondary" style={{ fontSize: 12 }}>打印机状态</Text>
+            <div style={{ marginTop: 4, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Tag>{result.printer_context.brand} {result.printer_context.model}</Tag>
+              <Tag color={result.printer_context.status === 'online' ? 'green' : result.printer_context.status === 'error' ? 'red' : 'default'}>
+                {result.printer_context.status === 'online' ? '在线' : result.printer_context.status === 'offline' ? '离线' : result.printer_context.status}
+              </Tag>
+              <Tag>碳粉: {result.printer_context.toner_level}%</Tag>
+              <Tag>纸张: {result.printer_context.paper_level}%</Tag>
+            </div>
+          </div>
+        )}
+
+        {/* Driver Recommendations */}
+        {result.driver_recommendations && result.driver_recommendations.length > 0 && (
+          <div>
+            <Text type="secondary" style={{ fontSize: 12 }}>推荐驱动</Text>
+            <List
+              size="small"
+              dataSource={result.driver_recommendations}
+              renderItem={(drv) => (
+                <List.Item style={{ padding: '2px 0' }}>
+                  <Space>
+                    <Tag color="blue">{drv.os.toUpperCase()}</Tag>
+                    <span>v{drv.version}</span>
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() => window.open(`/api/v1/drivers/${drv.id}/download`, '_blank')}
+                    >
+                      下载
+                    </Button>
+                  </Space>
+                </List.Item>
+              )}
+              style={{ marginTop: 4 }}
+            />
+          </div>
+        )}
       </Space>
     </div>
   );

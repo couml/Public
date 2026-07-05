@@ -21,7 +21,7 @@ from app.core.config import settings
 router = APIRouter(prefix="/drivers")
 
 
-@router.get("/", response_model=PaginatedResponse[DriverPackageOut])
+@router.get("", response_model=PaginatedResponse[DriverPackageOut])
 async def list_drivers(
     brand: str | None = Query(default=None),
     model: str | None = Query(default=None),

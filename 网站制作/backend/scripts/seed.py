@@ -61,26 +61,25 @@ async def seed():
         db.add_all([admin, it_staff, normal_user])
         await db.flush()
 
-        # === Printers (18 devices) ===
+        # === Printers (1 active HP Laser MFP 136a, rest offline) ===
         printer_data = [
-            {"name": "HP Laser MFP 136a - 1F", "brand": "HP", "model": "Laser MFP 136a", "ip_address": "192.168.1.101", "location": "1楼大厅", "status": "online", "toner_level": 78, "paper_level": 85, "supports_duplex": False},
-            {"name": "HP Laser MFP 136a - 2F", "brand": "HP", "model": "Laser MFP 136a", "ip_address": "192.168.1.102", "location": "2楼办公室", "status": "online", "toner_level": 45, "paper_level": 60, "supports_duplex": False},
-            {"name": "HP LaserJet Pro M404dn", "brand": "HP", "model": "LaserJet Pro M404dn", "ip_address": "192.168.1.103", "location": "3楼财务部", "status": "busy", "toner_level": 90, "paper_level": 95, "supports_duplex": True},
-            {"name": "HP Color LaserJet MFP M479fdw", "brand": "HP", "model": "Color LaserJet MFP M479fdw", "ip_address": "192.168.1.104", "location": "4楼市场部", "status": "online", "toner_level": 65, "paper_level": 70, "supports_color": True, "supports_duplex": True, "toner_type": "CMYK"},
-            {"name": "Canon iR-ADV C3530", "brand": "Canon", "model": "imageRUNNER ADVANCE C3530", "ip_address": "192.168.1.105", "location": "5楼高管区", "status": "online", "toner_level": 55, "paper_level": 40, "supports_color": True, "supports_duplex": True, "toner_type": "CMYK"},
-            {"name": "Canon LBP226dw", "brand": "Canon", "model": "LBP226dw", "ip_address": "192.168.1.106", "location": "2楼研发部", "status": "error", "toner_level": 5, "paper_level": 30, "supports_duplex": True},
-            {"name": "Epson WorkForce Pro WF-4830", "brand": "Epson", "model": "WorkForce Pro WF-4830", "ip_address": "192.168.1.107", "location": "3楼人力部", "status": "online", "toner_level": 82, "paper_level": 90, "supports_color": True, "supports_duplex": True, "toner_type": "CMYK"},
+            {"name": "HP Laser MFP 136a", "brand": "HP", "model": "Laser MFP 136a", "ip_address": "192.168.1.101", "location": "1楼大厅", "status": "online", "toner_level": 78, "paper_level": 85, "supports_duplex": False},
+            {"name": "HP LaserJet Pro M404dn", "brand": "HP", "model": "LaserJet Pro M404dn", "ip_address": "192.168.1.103", "location": "3楼财务部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "HP Color LaserJet MFP M479fdw", "brand": "HP", "model": "Color LaserJet MFP M479fdw", "ip_address": "192.168.1.104", "location": "4楼市场部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True, "supports_duplex": True, "toner_type": "CMYK"},
+            {"name": "Canon iR-ADV C3530", "brand": "Canon", "model": "imageRUNNER ADVANCE C3530", "ip_address": "192.168.1.105", "location": "5楼高管区", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True, "supports_duplex": True, "toner_type": "CMYK"},
+            {"name": "Canon LBP226dw", "brand": "Canon", "model": "LBP226dw", "ip_address": "192.168.1.106", "location": "2楼研发部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "Epson WorkForce Pro WF-4830", "brand": "Epson", "model": "WorkForce Pro WF-4830", "ip_address": "192.168.1.107", "location": "3楼人力部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True, "supports_duplex": True, "toner_type": "CMYK"},
             {"name": "Epson EcoTank L15160", "brand": "Epson", "model": "EcoTank L15160", "ip_address": "192.168.1.108", "location": "1楼接待处", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True},
-            {"name": "Brother HL-L2350DW", "brand": "Brother", "model": "HL-L2350DW", "ip_address": "192.168.1.109", "location": "4楼设计部", "status": "online", "toner_level": 33, "paper_level": 55, "supports_duplex": True},
-            {"name": "Brother MFC-L2750DW", "brand": "Brother", "model": "MFC-L2750DW", "ip_address": "192.168.1.110", "location": "2楼会议室A", "status": "online", "toner_level": 70, "paper_level": 80, "supports_duplex": True},
-            {"name": "Kyocera ECOSYS P2040dw", "brand": "Kyocera", "model": "ECOSYS P2040dw", "ip_address": "192.168.1.111", "location": "5楼法务部", "status": "online", "toner_level": 60, "paper_level": 75, "supports_duplex": True},
-            {"name": "Kyocera TASKalfa 2553ci", "brand": "Kyocera", "model": "TASKalfa 2553ci", "ip_address": "192.168.1.112", "location": "3楼运营部", "status": "busy", "toner_level": 40, "paper_level": 50, "supports_color": True, "supports_duplex": True},
-            {"name": "Ricoh IM C3000", "brand": "Ricoh", "model": "IM C3000", "ip_address": "192.168.1.113", "location": "4楼会议室B", "status": "online", "toner_level": 88, "paper_level": 92, "supports_color": True, "supports_duplex": True},
-            {"name": "Xerox VersaLink C405", "brand": "Xerox", "model": "VersaLink C405", "ip_address": "192.168.1.114", "location": "1楼前台", "status": "error", "toner_level": 2, "paper_level": 15, "supports_color": True, "supports_duplex": True},
-            {"name": "Samsung ProXpress M4580FX", "brand": "Samsung", "model": "ProXpress M4580FX", "ip_address": "192.168.1.115", "location": "2楼行政部", "status": "offline", "toner_level": 25, "paper_level": 45, "supports_duplex": True},
-            {"name": "HP LaserJet Enterprise M607", "brand": "HP", "model": "LaserJet Enterprise M607", "ip_address": "192.168.1.116", "location": "5楼数据中心", "status": "online", "toner_level": 95, "paper_level": 98, "supports_duplex": True},
-            {"name": "Canon iR 1643iF", "brand": "Canon", "model": "imageRUNNER 1643iF", "ip_address": "192.168.1.117", "location": "1楼保安室", "status": "online", "toner_level": 50, "paper_level": 65, "supports_duplex": False},
-            {"name": "Dell B3465dnf", "brand": "Dell", "model": "B3465dnf", "ip_address": "192.168.1.118", "location": "3楼库房", "status": "online", "toner_level": 15, "paper_level": 35, "supports_duplex": True},
+            {"name": "Brother HL-L2350DW", "brand": "Brother", "model": "HL-L2350DW", "ip_address": "192.168.1.109", "location": "4楼设计部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "Brother MFC-L2750DW", "brand": "Brother", "model": "MFC-L2750DW", "ip_address": "192.168.1.110", "location": "2楼会议室A", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "Kyocera ECOSYS P2040dw", "brand": "Kyocera", "model": "ECOSYS P2040dw", "ip_address": "192.168.1.111", "location": "5楼法务部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "Kyocera TASKalfa 2553ci", "brand": "Kyocera", "model": "TASKalfa 2553ci", "ip_address": "192.168.1.112", "location": "3楼运营部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True, "supports_duplex": True},
+            {"name": "Ricoh IM C3000", "brand": "Ricoh", "model": "IM C3000", "ip_address": "192.168.1.113", "location": "4楼会议室B", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True, "supports_duplex": True},
+            {"name": "Xerox VersaLink C405", "brand": "Xerox", "model": "VersaLink C405", "ip_address": "192.168.1.114", "location": "1楼前台", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_color": True, "supports_duplex": True},
+            {"name": "Samsung ProXpress M4580FX", "brand": "Samsung", "model": "ProXpress M4580FX", "ip_address": "192.168.1.115", "location": "2楼行政部", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "HP LaserJet Enterprise M607", "brand": "HP", "model": "LaserJet Enterprise M607", "ip_address": "192.168.1.116", "location": "5楼数据中心", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
+            {"name": "Canon iR 1643iF", "brand": "Canon", "model": "imageRUNNER 1643iF", "ip_address": "192.168.1.117", "location": "1楼保安室", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": False},
+            {"name": "Dell B3465dnf", "brand": "Dell", "model": "B3465dnf", "ip_address": "192.168.1.118", "location": "3楼库房", "status": "offline", "toner_level": 0, "paper_level": 0, "supports_duplex": True},
         ]
 
         printers = []

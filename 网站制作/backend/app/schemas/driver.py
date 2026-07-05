@@ -1,13 +1,15 @@
-from datetime import datetime
+from datetime import date, datetime
 from uuid import UUID
+
+from pydantic import Field
+
 from app.schemas.common import ORMModel
-from pydantic import BaseModel, Field
 
 
 class DriverPackageOut(ORMModel):
     """驱动包响应"""
 
-    id: str = Field(description="驱动包ID")
+    id: UUID = Field(description="驱动包ID")
     brand: str = Field(description="适用品牌")
     model: str = Field(description="适用型号")
     os_platform: str = Field(description="操作系统: windows/macos/linux")
@@ -15,12 +17,11 @@ class DriverPackageOut(ORMModel):
     file_size: int = Field(description="文件大小（字节）")
     storage_path: str = Field(description="存储路径")
     download_count: int = Field(default=0, description="下载次数")
-    release_date: str = Field(description="发布日期")
+    release_date: date = Field(description="发布日期")
     changelog: str | None = Field(default=None, description="更新日志")
     is_active: bool = Field(default=True, description="是否启用")
-    created_at: str = Field(description="创建时间（ISO格式）")
-
-    model_config = {"from_attributes": True}
+    created_at: datetime = Field(description="创建时间")
+    updated_at: datetime = Field(description="更新时间")
 
 
 class DriverListQuery(ORMModel):

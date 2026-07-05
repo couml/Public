@@ -55,7 +55,7 @@ async def simulate_job_progression(
         await session.commit()
 
 
-@router.post("/", response_model=PrintJobOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=PrintJobOut, status_code=status.HTTP_201_CREATED)
 async def submit_print_job(
     body: PrintJobCreate,
     background_tasks: BackgroundTasks,
@@ -142,7 +142,7 @@ async def submit_print_job(
     return job
 
 
-@router.get("/", response_model=PaginatedResponse[PrintJobOut])
+@router.get("", response_model=PaginatedResponse[PrintJobOut])
 async def list_print_jobs(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),

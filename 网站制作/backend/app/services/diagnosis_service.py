@@ -576,19 +576,20 @@ KEYWORD_DIAGNOSIS: dict[str, dict] = {
     },
     "DRIVER_ISSUE": {
         "fault_type": "DRIVER_ISSUE",
-        "root_cause": "打印驱动异常或配置错误",
+        "root_cause": "打印驱动异常、缺失或配置不正确，导致打印机无法正常工作",
         "severity": "warning",
         "steps": [
-            "在电脑上检查打印队列，清除卡住的任务",
-            "重启 Print Spooler 服务",
-            "卸载并重新安装打印机驱动",
-            "确认安装了正确型号和操作系统版本的驱动",
-            "检查打印机是否被设置为默认打印机",
-            "尝试通过 IP 直接添加打印机（而非自动发现）",
+            "第一步：确认操作系统版本（Windows 10/11、macOS 版本等）",
+            "第二步：进入「驱动下载」页面，搜索您的打印机品牌和型号",
+            "第三步：下载对应操作系统的最新版本驱动程序",
+            "第四步：安装驱动前，先在「控制面板 → 设备和打印机」中删除旧打印机",
+            "第五步：运行驱动安装程序，按照向导完成安装",
+            "第六步：安装完成后打印测试页验证",
+            "如仍无法打印：打开「服务」面板 (services.msc)，找到 Print Spooler 服务并重启",
         ],
         "parts": [],
         "safety": [],
-        "confidence": 0.8,
+        "confidence": 0.85,
     },
     "OPTICS_DIRTY": {
         "fault_type": "OPTICS_DIRTY",
@@ -667,15 +668,15 @@ async def diagnose(
     printer_id: uuid.UUID | None = None,
     session_context: dict | None = None,
 ) -> dict:
-    # Collect printer context if available
+    # Collect printer context and driver info if available
     printer_context = None
+    driver_recommendations = None
     if printer_id:
         result = await db.execute(
             select(Printer).where(Printer.id == printer_id)
         )
         printer = result.scalars().first()
         if printer:
-            # Get latest status log
             log_result = await db.execute(
                 select(PrinterStatusLog)
                 .where(PrinterStatusLog.printer_id == printer_id)
@@ -694,15 +695,36 @@ async def diagnose(
                 "latest_error_message": latest_log.error_message if latest_log else None,
             }
 
+            # Fetch matching drivers for this printer
+            from app.models.driver_package import DriverPackage
+            drv_result = await db.execute(
+                select(DriverPackage)
+                .where(
+                    DriverPackage.brand == printer.brand,
+                    DriverPackage.model == printer.model,
+                    DriverPackage.is_active == True,
+                )
+                .order_by(DriverPackage.version.desc())
+                .limit(5)
+            )
+            drivers = list(drv_result.scalars().all())
+            if drivers:
+                driver_recommendations = [
+                    {"os": d.os_platform, "version": d.version, "id": str(d.id)}
+                    for d in drivers
+                ]
+
     # Step 1: Try explicit error code matching
     msg_upper = message.upper()
     for pattern, diagnosis in ERROR_CODE_DB.items():
         if re.search(pattern, msg_upper, re.IGNORECASE):
             result = dict(diagnosis)
             result["matched_pattern"] = pattern
+            result["diagnosis_method"] = "error_code_match"
             if printer_context:
                 result["printer_context"] = printer_context
-            result["diagnosis_method"] = "error_code_match"
+            if driver_recommendations:
+                result["driver_recommendations"] = driver_recommendations
             return result
 
     # Step 2: Fall back to keyword matching
@@ -722,20 +744,58 @@ async def diagnose(
         result["diagnosis_method"] = "keyword_match"
         if printer_context:
             result["printer_context"] = printer_context
+        if driver_recommendations:
+            result["driver_recommendations"] = driver_recommendations
         return result
 
-    # Step 3: No match — return low-confidence response
+    # Step 3: Check if printer is offline → auto-suggest driver/connection fixes
+    if printer_context and printer_context["status"] == "offline":
+        steps = [
+            f'打印机 {printer_context["brand"]} {printer_context["model"]} 当前处于离线状态',
+            "检查 USB 线缆或网络连接是否正常",
+            "确认打印机电源已开启",
+            "尝试重新安装或更新打印机驱动程序",
+        ]
+        if driver_recommendations:
+            steps.append("以下是适配的驱动程序版本：")
+            for drv in driver_recommendations:
+                steps.append(f"  - {drv['os']}: v{drv['version']}")
+            steps.append("请前往「驱动下载」页面下载对应驱动")
+        else:
+            steps.append("请前往「驱动下载」页面搜索适配的驱动程序")
+
+        result = {
+            "fault_type": "PRINTER_OFFLINE",
+            "root_cause": f'{printer_context["brand"]} {printer_context["model"]} 未连接到网络或电源异常',
+            "severity": "warning",
+            "steps": steps,
+            "parts": ["USB 线缆", "网线", "电源线"],
+            "safety": [],
+            "confidence": 0.85,
+            "diagnosis_method": "printer_status_check",
+            "printer_context": printer_context,
+        }
+        if driver_recommendations:
+            result["driver_recommendations"] = driver_recommendations
+        return result
+
+    # Step 4: No match — return low-confidence response
+    steps = [
+        "请提供更详细的故障现象描述",
+        "如果打印机显示了错误代码，请告知具体代码",
+        "描述问题发生前后的操作过程",
+        "尝试重启打印机后观察是否仍有问题",
+        "检查打印机面板是否有警告指示灯",
+    ]
+    if printer_context and printer_context["status"] == "online":
+        steps.insert(0, f'当前打印机 {printer_context["brand"]} {printer_context["model"]} 状态正常（在线）')
+        steps.append(f'碳粉余量：{printer_context["toner_level"]}%  纸张余量：{printer_context["paper_level"]}%')
+
     result = {
         "fault_type": "UNKNOWN",
         "root_cause": "无法从当前描述中识别明确的故障模式",
         "severity": "info",
-        "steps": [
-            "请提供更详细的故障现象描述",
-            "如果打印机显示了错误代码，请告知具体代码",
-            "描述问题发生前后的操作过程",
-            "尝试重启打印机后观察是否仍有问题",
-            "检查打印机面板是否有警告指示灯",
-        ],
+        "steps": steps,
         "parts": [],
         "safety": [],
         "confidence": 0.2,
@@ -743,6 +803,8 @@ async def diagnose(
     }
     if printer_context:
         result["printer_context"] = printer_context
+    if driver_recommendations:
+        result["driver_recommendations"] = driver_recommendations
     return result
 
 

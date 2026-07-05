@@ -188,12 +188,13 @@ async def create_session(
     """Create a new diagnosis session."""
     session = DiagnosisSession(
         user_id=current_user.id,
-        printer_id=uuid.UUID(body.printer_id) if body.printer_id else None,
+        printer_id=body.printer_id,
         session_title=body.title or "New Diagnosis",
     )
     db.add(session)
     await db.commit()
     await db.refresh(session)
+    session.messages = None
 
     return session
 
@@ -214,7 +215,10 @@ async def list_sessions(
     query = query.offset((page - 1) * page_size).limit(page_size)
 
     result = await db.execute(query)
-    sessions = result.scalars().all()
+    sessions = list(result.scalars().all())
+    # Avoid lazy-load: set messages to None for list view
+    for s in sessions:
+        s.messages = None
 
     return PaginatedResponse(
         items=sessions,

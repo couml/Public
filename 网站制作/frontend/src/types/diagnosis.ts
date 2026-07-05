@@ -22,6 +22,22 @@ export interface DiagnosisMessage {
   created_at: string;
 }
 
+export interface DriverRecommendation {
+  os: string;
+  version: string;
+  id: string;
+}
+
+export interface PrinterContext {
+  brand: string;
+  model: string;
+  status: string;
+  toner_level: number;
+  paper_level: number;
+  latest_error_code: string | null;
+  latest_error_message: string | null;
+}
+
 export interface DiagnosisResult {
   fault_type: string;
   root_cause: string;
@@ -30,4 +46,7 @@ export interface DiagnosisResult {
   parts: string[];
   safety: string[];
   confidence: number;
+  driver_recommendations?: DriverRecommendation[];
+  printer_context?: PrinterContext;
+  diagnosis_method?: string;
 }

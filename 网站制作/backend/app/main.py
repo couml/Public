@@ -14,36 +14,39 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Try to connect Redis (skip if unavailable)
-    try:
-        from app.utils.redis_client import get_redis
-        get_redis().ping()
-        print("Redis connected.")
-    except Exception:
-        print("Redis not available, using mock mode.")
+    # Auto-seed if DB is empty
+    from sqlalchemy import select
+    from app.db.session import AsyncSessionLocal
+    from app.models.user import User
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(select(User).limit(1))
+        if not result.scalar_one_or_none():
+            print("Database empty, seeding...")
+            from scripts.seed import seed
+            await seed()
+            print("Seed complete.")
 
-    # Try to connect MinIO (skip if unavailable)
-    try:
-        from app.utils.minio_client import minio_client
-        minio_client.ensure_bucket(settings.MINIO_BUCKET)
-        print("MinIO connected.")
-    except Exception:
-        print("MinIO not available, using mock mode.")
+    print("Redis not available, using mock mode.")
+    print("MinIO not available, using mock mode.")
 
     yield
-
-    # Shutdown
     await engine.dispose()
 
 
 app = FastAPI(
     title=settings.APP_NAME + " API",
     lifespan=lifespan,
+    redirect_slashes=False,
 )
+
+# Parse CORS origins from settings, fallback to allow all in production
+_cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+if not _cors_origins or settings.DEBUG:
+    _cors_origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in settings.CORS_ORIGINS.split(",")],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

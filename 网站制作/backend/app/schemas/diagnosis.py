@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
+
+from pydantic import Field
+
 from app.schemas.common import ORMModel
-from pydantic import BaseModel, Field
 
 
 class SessionCreate(ORMModel):
@@ -32,32 +34,28 @@ class DiagnosisResultSchema(ORMModel):
 class MessageOut(ORMModel):
     """诊断消息响应"""
 
-    id: str = Field(description="消息ID")
-    session_id: str = Field(description="会话ID")
+    id: UUID = Field(description="消息ID")
+    session_id: UUID = Field(description="会话ID")
     role: str = Field(description="角色: user/assistant/system")
     message: str = Field(description="消息内容")
     diagnosis_result: DiagnosisResultSchema | None = Field(default=None, description="诊断结果（仅assistant消息）")
     step_number: int | None = Field(default=None, description="步骤序号")
-    created_at: str = Field(description="创建时间（ISO格式）")
-
-    model_config = {"from_attributes": True}
+    created_at: datetime = Field(description="创建时间")
 
 
 class SessionOut(ORMModel):
     """诊断会话响应"""
 
-    id: str = Field(description="会话ID")
-    user_id: str = Field(description="用户ID")
+    id: UUID = Field(description="会话ID")
+    user_id: UUID = Field(description="用户ID")
     printer_id: UUID | None = Field(default=None, description="关联打印机ID")
     session_title: str | None = Field(default=None, description="会话标题")
     status: str = Field(description="状态: active/completed/archived")
     error_codes: list[str] = Field(default_factory=list, description="相关错误码")
     resolution_summary: str | None = Field(default=None, description="解决方案摘要")
-    created_at: str = Field(description="创建时间（ISO格式）")
-    updated_at: str = Field(description="更新时间（ISO格式）")
+    created_at: datetime = Field(description="创建时间")
+    updated_at: datetime = Field(description="更新时间")
     messages: list[MessageOut] | None = Field(default=None, description="消息列表")
-
-    model_config = {"from_attributes": True}
 
 
 class PredictRequest(ORMModel):

@@ -25,7 +25,7 @@ from app.schemas.device import (
 router = APIRouter(prefix="/devices")
 
 
-@router.get("/", response_model=PaginatedResponse[PrinterOut])
+@router.get("", response_model=PaginatedResponse[PrinterOut])
 async def list_printers(
     brand: str | None = Query(default=None, description="Filter by brand"),
     status: str | None = Query(default=None, description="Filter by status"),

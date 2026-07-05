@@ -20,9 +20,9 @@ export function useWebSocket({ deviceId, onMessage }: UseWebSocketOptions) {
     const token = getAccessToken();
     if (!token) return;
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    const url = `${protocol}//${host}/ws/devices/${deviceId}?token=${token}`;
+    const apiBase = import.meta.env.VITE_API_BASE || '';
+    const wsBase = apiBase.replace(/^http/, 'ws');
+    const url = `${wsBase}/ws/devices/${deviceId}?token=${token}`;
 
     const ws = new WebSocket(url);
     wsRef.current = ws;

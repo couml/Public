@@ -1,22 +1,22 @@
 from datetime import datetime
 from uuid import UUID
+
+from pydantic import Field
+
 from app.schemas.common import ORMModel
-from pydantic import BaseModel, Field
 
 
 class AdminLogOut(ORMModel):
     """管理操作日志响应"""
 
-    id: str = Field(description="日志ID")
-    user_id: str = Field(description="操作用户ID")
+    id: UUID = Field(description="日志ID")
+    user_id: UUID | None = Field(default=None, description="操作用户ID")
     action: str = Field(description="操作类型")
     resource: str = Field(description="资源类型")
-    resource_id: UUID | None = Field(default=None, description="资源ID")
-    detail: str | None = Field(default=None, description="操作详情")
+    resource_id: str | None = Field(default=None, description="资源ID")
+    detail: dict | None = Field(default=None, description="操作详情")
     ip_address: str | None = Field(default=None, description="操作IP地址")
-    created_at: str = Field(description="操作时间（ISO格式）")
-
-    model_config = {"from_attributes": True}
+    created_at: datetime = Field(description="操作时间")
 
 
 class AdminStatsOut(ORMModel):

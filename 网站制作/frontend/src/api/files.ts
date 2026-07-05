@@ -3,6 +3,19 @@ import type { FileRecord } from '@/types/print';
 import type { PaginatedResponse } from '@/types/api';
 
 export const filesApi = {
+  simpleUpload: (file: File, onProgress?: (pct: number) => void) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post<FileRecord>('/files/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (e) => {
+        if (e.total && onProgress) {
+          onProgress(Math.round((e.loaded / e.total) * 100));
+        }
+      },
+    }).then((r) => r.data);
+  },
+
   initUpload: (data: { filename: string; file_size: number; file_md5: string; total_chunks: number; mime_type?: string }) =>
     apiClient.post<{ upload_id: string; file_id: string }>('/files/upload/init', data).then((r) => r.data),
 
@@ -37,5 +50,5 @@ export const filesApi = {
     apiClient.post<FileRecord>('/files/convert', { file_id: fileId, target_format: targetFormat }).then((r) => r.data),
 
   getStaging: () =>
-    apiClient.get<FileRecord[]>('/files/staging').then((r) => r.data),
+    apiClient.get<PaginatedResponse<FileRecord>>('/files/staging').then((r) => r.data),
 };

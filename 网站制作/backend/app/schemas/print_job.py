@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
+
+from pydantic import Field
+
 from app.schemas.common import ORMModel
-from pydantic import BaseModel, Field
 
 
 class PrintJobCreate(ORMModel):
@@ -22,10 +24,10 @@ class PrintJobCreate(ORMModel):
 class PrintJobOut(ORMModel):
     """打印任务响应"""
 
-    id: str = Field(description="任务ID")
-    user_id: str = Field(description="用户ID")
-    printer_id: str = Field(description="打印机ID")
-    file_id: str = Field(description="文件ID")
+    id: UUID = Field(description="任务ID")
+    user_id: UUID = Field(description="用户ID")
+    printer_id: UUID = Field(description="打印机ID")
+    file_id: UUID = Field(description="文件ID")
     status: str = Field(description="状态: pending/processing/completed/failed/cancelled")
     copies: int = Field(description="打印份数")
     color_mode: str = Field(description="色彩模式")
@@ -34,15 +36,14 @@ class PrintJobOut(ORMModel):
     page_range: str | None = Field(default=None, description="页码范围")
     n_up: str = Field(description="每页版面数")
     orientation: str = Field(description="纸张方向")
-    total_pages: int = Field(default=0, description="总页数")
-    printed_pages: int = Field(default=0, description="已打印页数")
+    total_pages: int | None = Field(default=None, description="总页数")
+    pages_printed: int = Field(default=0, description="已打印页数")
     error_message: str | None = Field(default=None, description="错误信息")
     pin_code: str | None = Field(default=None, description="安全打印PIN码")
-    started_at: str | None = Field(default=None, description="开始时间（ISO格式）")
-    completed_at: str | None = Field(default=None, description="完成时间（ISO格式）")
-    created_at: str = Field(description="创建时间（ISO格式）")
-
-    model_config = {"from_attributes": True}
+    queued_at: datetime = Field(description="排队时间")
+    started_at: datetime | None = Field(default=None, description="开始时间")
+    completed_at: datetime | None = Field(default=None, description="完成时间")
+    created_at: datetime = Field(description="创建时间")
 
 
 class PrintJobStatsOut(ORMModel):
