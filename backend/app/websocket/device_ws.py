@@ -1,3 +1,4 @@
+from __future__ import annotations
 """WebSocket endpoint for real-time device status updates."""
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query

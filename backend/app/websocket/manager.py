@@ -1,3 +1,4 @@
+from __future__ import annotations
 """WebSocket Connection Manager for device real-time status."""
 
 from fastapi import WebSocket

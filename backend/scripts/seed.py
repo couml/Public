@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Seed the database with initial data: admin user, printers, drivers, sample documents."""
 
 import asyncio

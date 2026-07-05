@@ -1,3 +1,4 @@
+from __future__ import annotations
 """MinIO client wrapper with in-memory fallback."""
 
 import io

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .user import User
 from .printer import Printer
 from .printer_status_log import PrinterStatusLog
