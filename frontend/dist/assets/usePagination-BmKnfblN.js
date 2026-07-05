@@ -1,0 +1,1 @@
+import{r as e}from"./index-BLLjNMs4.js";function p(a=20){const[s,t]=e.useState(1),[n,o]=e.useState(a),r=e.useCallback((u,g)=>{t(u),o(g)},[]),c=e.useCallback(()=>{t(1)},[]);return{page:s,pageSize:n,onChange:r,reset:c}}export{p as u};

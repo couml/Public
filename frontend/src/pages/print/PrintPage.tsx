@@ -208,18 +208,10 @@ const PrintPage: React.FC = () => {
           <Button
             size="small"
             icon={<EyeOutlined />}
-            onClick={async () => {
-              try {
-                const token = localStorage.getItem('access_token');
-                const apiBase = import.meta.env.VITE_API_BASE || '';
-                const resp = await fetch(`${apiBase}/api/v1/files/${record.id}/preview?token=${token}`);
-                if (!resp.ok) throw new Error('Preview failed');
-                const blob = await resp.blob();
-                const url = URL.createObjectURL(blob);
-                window.open(url, '_blank');
-              } catch {
-                message.error('预览失败');
-              }
+            onClick={() => {
+              const token = localStorage.getItem('access_token');
+              const apiBase = import.meta.env.VITE_API_BASE || '';
+              window.open(`${apiBase}/api/v1/files/${record.id}/preview?token=${token}`, '_blank');
             }}
           >
             查看
