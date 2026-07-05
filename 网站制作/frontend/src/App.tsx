@@ -48,7 +48,7 @@ const App: React.FC = () => {
         },
       }}
     >
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL || '/'}>
         <Suspense fallback={<PageLoading />}>
           <Routes>
             {/* Public routes */}
