@@ -26,11 +26,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        working-directory: ./网站制作/frontend
+        working-directory: ./frontend
         run: npm install
 
       - name: Build
-        working-directory: ./网站制作/frontend
+        working-directory: ./frontend
         run: npm run build
         env:
           VITE_API_BASE: ${{ vars.VITE_API_BASE || 'https://your-backend.onrender.com' }}
@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./网站制作/frontend/dist
+          path: ./frontend/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
