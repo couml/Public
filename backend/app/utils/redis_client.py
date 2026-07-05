@@ -75,5 +75,5 @@ except Exception:
     redis_client = MockRedis()
 
 
-def get_redis() -> MockRedis | Redis:
+def get_redis():
     return redis_client
