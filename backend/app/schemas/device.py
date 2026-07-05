@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -14,22 +16,22 @@ class PrinterOut(ORMModel):
     name: str
     brand: str
     model: str
-    serial_number: str | None = None
+    serial_number: Optional[str] = None
     ip_address: str
-    mac_address: str | None = None
-    location: str | None = None
+    mac_address: Optional[str] = None
+    location: Optional[str] = None
     status: str
     toner_level: int = 0
-    toner_type: str | None = None
+    toner_type: Optional[str] = None
     paper_level: int = 0
     total_pages_printed: int = 0
-    firmware_version: str | None = None
+    firmware_version: Optional[str] = None
     snmp_community: str = "public"
     snmp_port: int = 161
     supports_color: bool = False
     supports_duplex: bool = False
     max_paper_size: str = "A4"
-    last_seen_at: datetime | None = None
+    last_seen_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
 
@@ -40,12 +42,12 @@ class PrinterStatusOut(ORMModel):
     id: UUID
     printer_id: UUID
     status: str
-    toner_level: int | None = None
-    paper_level: int | None = None
-    error_code: str | None = None
-    error_message: str | None = None
-    ip_address: str | None = None
-    response_time_ms: int | None = None
+    toner_level: Optional[int] = None
+    paper_level: Optional[int] = None
+    error_code: Optional[str] = None
+    error_message: Optional[str] = None
+    ip_address: Optional[str] = None
+    response_time_ms: Optional[int] = None
     recorded_at: datetime
 
 
@@ -58,8 +60,8 @@ class PrinterAlertOut(ORMModel):
     severity: str
     message: str
     is_resolved: bool = False
-    resolved_by: UUID | None = None
-    resolved_at: datetime | None = None
+    resolved_by: Optional[UUID] = None
+    resolved_at: Optional[datetime] = None
     created_at: datetime
 
 
@@ -77,8 +79,8 @@ class PrinterStatsOut(ORMModel):
 class PrinterListQuery(ORMModel):
     """打印机列表查询参数"""
 
-    brand: str | None = None
-    status: str | None = None
-    search: str | None = None
+    brand: Optional[str] = None
+    status: Optional[str] = None
+    search: Optional[str] = None
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=20, ge=1, le=100)

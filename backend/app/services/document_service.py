@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import asyncio
 import random
 import secrets
@@ -15,8 +17,8 @@ from app.models import ScanDocument
 async def list_documents(
     db: AsyncSession,
     user_id: uuid.UUID,
-    category: str | None = None,
-    tag: str | None = None,
+    category: Optional[str] = None,
+    tag: Optional[str] = None,
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[ScanDocument], int]:
@@ -153,7 +155,7 @@ async def update_tags(
     db: AsyncSession,
     document_id: uuid.UUID,
     tags: list[str] | None = None,
-    category: str | None = None,
+    category: Optional[str] = None,
 ) -> ScanDocument:
     result = await db.execute(
         select(ScanDocument).where(ScanDocument.id == document_id)

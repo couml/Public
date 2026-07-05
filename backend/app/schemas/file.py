@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -12,7 +14,7 @@ class UploadInitRequest(ORMModel):
     file_size: int
     file_md5: str
     total_chunks: int
-    mime_type: str | None = None
+    mime_type: Optional[str] = None
 
 
 class UploadInitResponse(ORMModel):
@@ -30,15 +32,15 @@ class FileRecordOut(ORMModel):
     user_id: UUID
     original_filename: str
     file_size: int
-    mime_type: str | None = None
-    file_md5: str | None = None
+    mime_type: Optional[str] = None
+    file_md5: Optional[str] = None
     storage_path: str
     status: str
-    converted_format: str | None = None
-    converted_path: str | None = None
-    page_count: int | None = None
+    converted_format: Optional[str] = None
+    converted_path: Optional[str] = None
+    page_count: Optional[int] = None
     is_temporary: bool = False
-    expires_at: datetime | None = None
+    expires_at: Optional[datetime] = None
     created_at: datetime
 
 
@@ -52,8 +54,8 @@ class StagingFileOut(ORMModel):
     user_id: UUID
     original_filename: str
     file_size: int
-    mime_type: str | None = None
+    mime_type: Optional[str] = None
     status: str
     is_temporary: bool = False
-    expires_at: datetime | None = None
+    expires_at: Optional[datetime] = None
     created_at: datetime

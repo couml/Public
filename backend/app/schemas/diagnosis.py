@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -10,8 +12,8 @@ from app.schemas.common import ORMModel
 class SessionCreate(ORMModel):
     """创建诊断会话请求"""
 
-    printer_id: UUID | None = Field(default=None, description="关联打印机ID")
-    title: str | None = Field(default=None, description="会话标题")
+    printer_id: Optional[UUID] = Field(default=None, description="关联打印机ID")
+    title: Optional[str] = Field(default=None, description="会话标题")
 
 
 class MessageCreate(ORMModel):
@@ -40,7 +42,7 @@ class MessageOut(ORMModel):
     role: str = Field(description="角色: user/assistant/system")
     message: str = Field(description="消息内容")
     diagnosis_result: DiagnosisResultSchema | None = Field(default=None, description="诊断结果（仅assistant消息）")
-    step_number: int | None = Field(default=None, description="步骤序号")
+    step_number: Optional[int] = Field(default=None, description="步骤序号")
     created_at: datetime = Field(description="创建时间")
 
 
@@ -49,11 +51,11 @@ class SessionOut(ORMModel):
 
     id: UUID = Field(description="会话ID")
     user_id: UUID = Field(description="用户ID")
-    printer_id: UUID | None = Field(default=None, description="关联打印机ID")
-    session_title: str | None = Field(default=None, description="会话标题")
+    printer_id: Optional[UUID] = Field(default=None, description="关联打印机ID")
+    session_title: Optional[str] = Field(default=None, description="会话标题")
     status: str = Field(description="状态: active/completed/archived")
     error_codes: list[str] = Field(default_factory=list, description="相关错误码")
-    resolution_summary: str | None = Field(default=None, description="解决方案摘要")
+    resolution_summary: Optional[str] = Field(default=None, description="解决方案摘要")
     created_at: datetime = Field(description="创建时间")
     updated_at: datetime = Field(description="更新时间")
     messages: list[MessageOut] | None = Field(default=None, description="消息列表")

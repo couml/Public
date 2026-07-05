@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import uuid
 from datetime import datetime, timezone
 
@@ -23,10 +25,10 @@ router = APIRouter(prefix="/drivers")
 
 @router.get("", response_model=PaginatedResponse[DriverPackageOut])
 async def list_drivers(
-    brand: str | None = Query(default=None),
-    model: str | None = Query(default=None),
-    os: str | None = Query(default=None),
-    search: str | None = Query(default=None),
+    brand: Optional[str] = Query(default=None),
+    model: Optional[str] = Query(default=None),
+    os: Optional[str] = Query(default=None),
+    search: Optional[str] = Query(default=None),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),

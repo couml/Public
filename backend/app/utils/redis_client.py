@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Redis client wrapper with in-memory fallback."""
 
 from typing import Optional

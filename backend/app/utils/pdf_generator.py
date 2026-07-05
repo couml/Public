@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from datetime import datetime
 
 from reportlab.lib.pagesizes import A4

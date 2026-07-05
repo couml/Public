@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -11,12 +13,12 @@ class AdminLogOut(ORMModel):
     """管理操作日志响应"""
 
     id: UUID = Field(description="日志ID")
-    user_id: UUID | None = Field(default=None, description="操作用户ID")
+    user_id: Optional[UUID] = Field(default=None, description="操作用户ID")
     action: str = Field(description="操作类型")
     resource: str = Field(description="资源类型")
-    resource_id: str | None = Field(default=None, description="资源ID")
-    detail: dict | None = Field(default=None, description="操作详情")
-    ip_address: str | None = Field(default=None, description="操作IP地址")
+    resource_id: Optional[str] = Field(default=None, description="资源ID")
+    detail: Optional[dict] = Field(default=None, description="操作详情")
+    ip_address: Optional[str] = Field(default=None, description="操作IP地址")
     created_at: datetime = Field(description="操作时间")
 
 

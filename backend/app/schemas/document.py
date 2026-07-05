@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -11,18 +13,18 @@ class DocumentOut(ORMModel):
     """扫描文档响应"""
 
     id: UUID = Field(description="文档ID")
-    user_id: UUID | None = Field(default=None, description="上传用户ID")
-    printer_id: UUID | None = Field(default=None, description="关联打印机ID")
+    user_id: Optional[UUID] = Field(default=None, description="上传用户ID")
+    printer_id: Optional[UUID] = Field(default=None, description="关联打印机ID")
     filename: str = Field(description="文件名")
     file_size: int = Field(description="文件大小（字节）")
-    mime_type: str | None = Field(default=None, description="MIME类型")
+    mime_type: Optional[str] = Field(default=None, description="MIME类型")
     storage_path: str = Field(description="存储路径")
-    page_count: int | None = Field(default=None, description="页数")
+    page_count: Optional[int] = Field(default=None, description="页数")
     tags: list[str] = Field(default_factory=list, description="标签")
-    category: str | None = Field(default=None, description="分类")
+    category: Optional[str] = Field(default=None, description="分类")
     is_shared: bool = Field(default=False, description="是否已分享")
-    share_token: str | None = Field(default=None, description="分享令牌")
-    share_expires_at: datetime | None = Field(default=None, description="分享过期时间")
+    share_token: Optional[str] = Field(default=None, description="分享令牌")
+    share_expires_at: Optional[datetime] = Field(default=None, description="分享过期时间")
     created_at: datetime = Field(description="创建时间")
 
 
@@ -44,4 +46,4 @@ class TagUpdate(ORMModel):
     """文档标签更新请求"""
 
     tags: list[str] = Field(default_factory=list, description="标签列表")
-    category: str | None = Field(default=None, description="分类")
+    category: Optional[str] = Field(default=None, description="分类")

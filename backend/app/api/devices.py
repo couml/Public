@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -28,9 +30,9 @@ router = APIRouter(prefix="/devices")
 
 @router.get("", response_model=PaginatedResponse[PrinterOut])
 async def list_printers(
-    brand: str | None = Query(default=None, description="Filter by brand"),
-    status: str | None = Query(default=None, description="Filter by status"),
-    search: str | None = Query(default=None, description="Search keyword"),
+    brand: Optional[str] = Query(default=None, description="Filter by brand"),
+    status: Optional[str] = Query(default=None, description="Filter by status"),
+    search: Optional[str] = Query(default=None, description="Search keyword"),
     page: int = Query(default=1, ge=1, description="Page number"),
     page_size: int = Query(default=20, ge=1, le=100, description="Items per page"),
     db: AsyncSession = Depends(get_db),

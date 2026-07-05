@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import asyncio
 import os
 import secrets
@@ -26,8 +28,8 @@ router = APIRouter(prefix="/documents")
 async def list_documents(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
-    category: str | None = Query(default=None),
-    tag: str | None = Query(default=None),
+    category: Optional[str] = Query(default=None),
+    tag: Optional[str] = Query(default=None),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):

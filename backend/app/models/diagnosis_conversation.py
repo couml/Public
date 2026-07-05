@@ -1,4 +1,4 @@
-from __future__ import annotations
+from typing import Optional
 import uuid
 from datetime import datetime
 from uuid import uuid4
@@ -25,7 +25,7 @@ class DiagnosisConversation(Base):
     )
     role: Mapped[str] = mapped_column(String(16))
     message: Mapped[str] = mapped_column(Text)
-    diagnosis_result: Mapped[dict | None] = mapped_column(JSON)
+    diagnosis_result: Mapped[Optional[dict]] = mapped_column(JSON)
     sources: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
     step_number: Mapped[int | None] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(

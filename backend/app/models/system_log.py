@@ -1,4 +1,4 @@
-from __future__ import annotations
+from typing import Optional
 import uuid
 from datetime import datetime
 from uuid import uuid4
@@ -24,7 +24,7 @@ class SystemLog(Base):
     action: Mapped[str] = mapped_column(String(64))
     resource: Mapped[str] = mapped_column(String(64))
     resource_id: Mapped[str | None] = mapped_column(String(64))
-    detail: Mapped[dict | None] = mapped_column(JSON)
+    detail: Mapped[Optional[dict]] = mapped_column(JSON)
     ip_address: Mapped[str | None] = mapped_column(String(45))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()

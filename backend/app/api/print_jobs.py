@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import asyncio
 import random
 import uuid
@@ -147,7 +149,7 @@ async def submit_print_job(
 async def list_print_jobs(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
-    status_filter: str | None = Query(default=None, alias="status"),
+    status_filter: Optional[str] = Query(default=None, alias="status"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):

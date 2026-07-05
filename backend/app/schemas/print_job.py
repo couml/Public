@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -16,10 +18,10 @@ class PrintJobCreate(ORMModel):
     color_mode: str = Field(default="grayscale", description="色彩模式: grayscale/color")
     duplex: bool = Field(default=False, description="是否双面打印")
     paper_size: str = Field(default="A4", description="纸张尺寸")
-    page_range: str | None = Field(default=None, description="页码范围（如1-5）")
+    page_range: Optional[str] = Field(default=None, description="页码范围（如1-5）")
     n_up: str = Field(default="1", description="每页打印版面数: 1/2/4/6/9/16")
     orientation: str = Field(default="portrait", description="纸张方向: portrait/landscape")
-    pin_code: str | None = Field(default=None, description="安全打印PIN码")
+    pin_code: Optional[str] = Field(default=None, description="安全打印PIN码")
 
 
 class PrintJobOut(ORMModel):
@@ -34,16 +36,16 @@ class PrintJobOut(ORMModel):
     color_mode: str = Field(description="色彩模式")
     duplex: bool = Field(description="是否双面")
     paper_size: str = Field(description="纸张尺寸")
-    page_range: str | None = Field(default=None, description="页码范围")
+    page_range: Optional[str] = Field(default=None, description="页码范围")
     n_up: str = Field(description="每页版面数")
     orientation: str = Field(description="纸张方向")
-    total_pages: int | None = Field(default=None, description="总页数")
+    total_pages: Optional[int] = Field(default=None, description="总页数")
     pages_printed: int = Field(default=0, description="已打印页数")
-    error_message: str | None = Field(default=None, description="错误信息")
-    pin_code: str | None = Field(default=None, description="安全打印PIN码")
+    error_message: Optional[str] = Field(default=None, description="错误信息")
+    pin_code: Optional[str] = Field(default=None, description="安全打印PIN码")
     queued_at: datetime = Field(description="排队时间")
-    started_at: datetime | None = Field(default=None, description="开始时间")
-    completed_at: datetime | None = Field(default=None, description="完成时间")
+    started_at: Optional[datetime] = Field(default=None, description="开始时间")
+    completed_at: Optional[datetime] = Field(default=None, description="完成时间")
     created_at: datetime = Field(description="创建时间")
 
 

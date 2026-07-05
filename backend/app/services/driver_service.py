@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import uuid
 from datetime import datetime, timezone
 
@@ -11,10 +13,10 @@ from app.models import DriverDownloadLog, DriverPackage
 
 async def list_drivers(
     db: AsyncSession,
-    brand: str | None = None,
-    model: str | None = None,
-    os: str | None = None,
-    search: str | None = None,
+    brand: Optional[str] = None,
+    model: Optional[str] = None,
+    os: Optional[str] = None,
+    search: Optional[str] = None,
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[DriverPackage], int]:
@@ -109,10 +111,10 @@ async def get_driver_versions(
 
 async def record_download(
     db: AsyncSession,
-    user_id: uuid.UUID | None,
+    user_id: uuid.Optional[UUID],
     driver_id: uuid.UUID,
-    ip_address: str | None,
-    user_agent: str | None,
+    ip_address: Optional[str],
+    user_agent: Optional[str],
 ) -> None:
     driver = await get_driver_by_id(db, driver_id)
     driver.download_count += 1

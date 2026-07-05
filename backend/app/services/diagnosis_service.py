@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import re
 import uuid
 
@@ -666,8 +668,8 @@ KEYWORD_DIAGNOSIS: dict[str, dict] = {
 async def diagnose(
     db: AsyncSession,
     message: str,
-    printer_id: uuid.UUID | None = None,
-    session_context: dict | None = None,
+    printer_id: uuid.Optional[UUID] = None,
+    session_context: Optional[dict] = None,
 ) -> dict:
     # Collect printer context and driver info if available
     printer_context = None

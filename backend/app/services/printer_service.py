@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import random
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -12,9 +14,9 @@ from app.models import Printer, PrinterAlert, PrinterStatusLog, PrintJob
 
 async def get_printers(
     db: AsyncSession,
-    brand: str | None = None,
-    status: str | None = None,
-    search: str | None = None,
+    brand: Optional[str] = None,
+    status: Optional[str] = None,
+    search: Optional[str] = None,
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[Printer], int]:

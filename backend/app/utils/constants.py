@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 PRINTER_BRANDS: list[str] = [
     "HP", "Canon", "Epson", "Brother", "Kyocera",
     "Ricoh", "Xerox", "Samsung", "Lexmark", "Dell",

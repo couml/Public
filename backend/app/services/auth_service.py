@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import uuid
 
 from fastapi import HTTPException
@@ -16,7 +18,7 @@ async def register_user(
     username: str,
     email: str,
     password: str,
-    full_name: str | None = None,
+    full_name: Optional[str] = None,
 ) -> User:
     existing = await db.execute(
         select(User).where(

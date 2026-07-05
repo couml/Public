@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from datetime import date, datetime
 from typing import Any, Generic, TypeVar
 from uuid import UUID
@@ -77,4 +78,4 @@ class ErrorResponse(BaseModel):
 
     success: bool = Field(default=False, description="是否成功")
     message: str = Field(description="错误消息")
-    error_code: str | None = Field(default=None, description="错误码")
+    error_code: Optional[str] = Field(default=None, description="错误码")

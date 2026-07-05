@@ -1,8 +1,7 @@
-from __future__ import annotations
+from typing import List
 import uuid
 from datetime import datetime
 from uuid import uuid4
-from typing import List
 
 from sqlalchemy import Uuid, CheckConstraint, DateTime, ForeignKey, JSON, String, Text, func
 

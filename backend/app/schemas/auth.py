@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 from app.schemas.common import ORMModel
@@ -11,7 +13,7 @@ class RegisterRequest(ORMModel):
     username: str = Field(min_length=3, max_length=64, description="用户名")
     email: EmailStr = Field(description="电子邮箱")
     password: str = Field(min_length=8, description="密码，最少8位")
-    full_name: str | None = Field(default=None, max_length=128, description="全名")
+    full_name: Optional[str] = Field(default=None, max_length=128, description="全名")
 
 
 class LoginRequest(ORMModel):

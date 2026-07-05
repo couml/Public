@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import asyncio
 import hashlib
 import os
@@ -40,7 +42,7 @@ async def init_upload(
     file_size: int,
     file_md5: str,
     total_chunks: int,
-    mime_type: str | None = None,
+    mime_type: Optional[str] = None,
 ) -> tuple[str, uuid.UUID]:
     if file_size > MAX_FILE_SIZE:
         raise HTTPException(

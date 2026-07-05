@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import asyncio
 import hashlib
 import io
@@ -59,7 +60,7 @@ def _write_file_bytes(storage_path: str, data: bytes) -> None:
         os.unlink(tmp_path)
 
 
-def _convert_to_pdf(data: bytes, filename: str, mime_type: str | None) -> bytes:
+def _convert_to_pdf(data: bytes, filename: str, mime_type: Optional[str]) -> bytes:
     """Convert file to PDF using real libraries."""
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
 
@@ -462,7 +463,7 @@ async def convert_file(
 async def list_files(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
-    status_filter: str | None = Query(default=None, alias="status"),
+    status_filter: Optional[str] = Query(default=None, alias="status"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -522,7 +523,7 @@ async def get_file(
 @router.get("/{id}/preview")
 async def preview_file(
     id: str,
-    token: str | None = Query(default=None),
+    token: Optional[str] = Query(default=None),
     db: AsyncSession = Depends(get_db),
 ):
     """Stream file inline for preview. Accepts JWT in query param or header."""

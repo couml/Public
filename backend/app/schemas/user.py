@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
@@ -13,9 +15,9 @@ class UserOut(ORMModel):
     id: UUID
     username: str
     email: str
-    full_name: str | None = None
+    full_name: Optional[str] = None
     role: str
-    department: str | None = None
+    department: Optional[str] = None
     is_active: bool
     created_at: datetime
 
@@ -23,7 +25,7 @@ class UserOut(ORMModel):
 class UserUpdate(ORMModel):
     """用户信息更新请求"""
 
-    full_name: str | None = Field(default=None, description="全名")
-    department: str | None = Field(default=None, description="部门")
-    role: str | None = Field(default=None, description="角色")
-    is_active: bool | None = Field(default=None, description="是否激活")
+    full_name: Optional[str] = Field(default=None, description="全名")
+    department: Optional[str] = Field(default=None, description="部门")
+    role: Optional[str] = Field(default=None, description="角色")
+    is_active: Optional[bool] = Field(default=None, description="是否激活")

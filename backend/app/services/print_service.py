@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import asyncio
 import random
 import uuid
@@ -104,7 +106,7 @@ async def submit_job(
 async def get_user_jobs(
     db: AsyncSession,
     user_id: uuid.UUID,
-    status: str | None = None,
+    status: Optional[str] = None,
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[PrintJob], int]:

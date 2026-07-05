@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from typing import Optional
 import uuid
 from datetime import datetime, timezone
 
@@ -30,12 +32,12 @@ admin_required = require_role(["admin", "it_staff"])
 
 async def create_system_log(
     db: AsyncSession,
-    user_id: uuid.UUID | None,
+    user_id: uuid.Optional[UUID],
     action: str,
     resource: str,
-    resource_id: str | None = None,
-    detail: dict | None = None,
-    ip_address: str | None = None,
+    resource_id: Optional[str] = None,
+    detail: Optional[dict] = None,
+    ip_address: Optional[str] = None,
 ) -> None:
     """Helper: create a system log entry."""
     log = SystemLog(
@@ -84,9 +86,9 @@ async def admin_add_printer(
     brand: str = Form(...),
     model: str = Form(...),
     ip_address: str = Form(...),
-    location: str | None = Form(default=None),
-    serial_number: str | None = Form(default=None),
-    mac_address: str | None = Form(default=None),
+    location: Optional[str] = Form(default=None),
+    serial_number: Optional[str] = Form(default=None),
+    mac_address: Optional[str] = Form(default=None),
     supports_color: bool = Form(default=False),
     supports_duplex: bool = Form(default=False),
     current_user: User = Depends(admin_required),
@@ -124,10 +126,10 @@ async def admin_add_printer(
 @router.put("/printers/{id}", response_model=PrinterOut)
 async def admin_update_printer(
     id: str,
-    name: str | None = Form(default=None),
-    location: str | None = Form(default=None),
-    ip_address: str | None = Form(default=None),
-    snmp_community: str | None = Form(default=None),
+    name: Optional[str] = Form(default=None),
+    location: Optional[str] = Form(default=None),
+    ip_address: Optional[str] = Form(default=None),
+    snmp_community: Optional[str] = Form(default=None),
     current_user: User = Depends(admin_required),
     db: AsyncSession = Depends(get_db),
 ):
@@ -249,7 +251,7 @@ async def admin_add_driver(
     os_platform: str = Form(...),
     version: str = Form(...),
     release_date: str = Form(...),
-    changelog: str | None = Form(default=None),
+    changelog: Optional[str] = Form(default=None),
     current_user: User = Depends(admin_required),
     db: AsyncSession = Depends(get_db),
 ):
@@ -303,11 +305,11 @@ async def admin_add_driver(
 @router.put("/drivers/{id}", response_model=DriverPackageOut)
 async def admin_update_driver(
     id: str,
-    brand: str | None = Form(default=None),
-    model: str | None = Form(default=None),
-    version: str | None = Form(default=None),
-    changelog: str | None = Form(default=None),
-    is_active: bool | None = Form(default=None),
+    brand: Optional[str] = Form(default=None),
+    model: Optional[str] = Form(default=None),
+    version: Optional[str] = Form(default=None),
+    changelog: Optional[str] = Form(default=None),
+    is_active: Optional[bool] = Form(default=None),
     current_user: User = Depends(admin_required),
     db: AsyncSession = Depends(get_db),
 ):
@@ -406,8 +408,8 @@ async def admin_delete_driver(
 async def admin_list_users(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
-    role: str | None = Query(default=None),
-    is_active: bool | None = Query(default=None),
+    role: Optional[str] = Query(default=None),
+    is_active: Optional[bool] = Query(default=None),
     db: AsyncSession = Depends(get_db),
     _current_user: User = Depends(admin_required),
 ):
@@ -535,8 +537,8 @@ async def admin_deactivate_user(
 async def admin_list_logs(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=50, ge=1, le=100),
-    action: str | None = Query(default=None),
-    user_id: str | None = Query(default=None),
+    action: Optional[str] = Query(default=None),
+    user_id: Optional[str] = Query(default=None),
     db: AsyncSession = Depends(get_db),
     _current_user: User = Depends(admin_required),
 ):
