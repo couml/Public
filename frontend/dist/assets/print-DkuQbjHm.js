@@ -1,1 +1,0 @@
-import{z as n}from"./index-BPwUJM_K.js";const e={submitJob:t=>n.post("/print/jobs",t).then(a=>a.data),list:t=>n.get("/print/jobs",{params:t}).then(a=>a.data),getById:t=>n.get(`/print/jobs/${t}`).then(a=>a.data),cancel:t=>n.post(`/print/jobs/${t}/cancel`).then(a=>a.data),getStats:()=>n.get("/print/jobs/stats").then(t=>t.data)};export{e as p};
