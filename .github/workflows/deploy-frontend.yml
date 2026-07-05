@@ -3,6 +3,7 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches: [master, main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -10,7 +11,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -19,21 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: npm install
-
-      - name: Build
-        working-directory: ./frontend
-        run: npm run build
-        env:
-          VITE_API_BASE: ${{ vars.VITE_API_BASE || 'https://your-backend.onrender.com' }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
